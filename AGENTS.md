@@ -64,6 +64,8 @@ reviewer who reads every file.
 ## Traps
 
 - **`POST /todos` always answers `id: 201`.** Two added tasks share a server id. That is why ids are local (D3).
+- **`workflow_dispatch` only finds workflows on `main`.** A new workflow file runs by dispatch only after it is merged.
 - **Writes do not persist on JSONPlaceholder.** A refetch restores the original 10 tasks; this is expected by the brief.
 - **`fetch` in React Native never times out by itself.** Use the `AbortController` in `todosApi.ts`.
+- **`@testing-library/react-native` needs `react-test-renderer` at exactly the installed `react` version** (the first lockfile run failed with ERESOLVE on React 19.3.0 vs 19.3.1). Add both together: `npx expo install @testing-library/react-native react-test-renderer@<react version>`.
 - **Dependency versions come from Expo's table.** Add a package with `npx expo install <pkg>`, not `npm install`, so it matches the SDK; without network, use the `lockfile` workflow.

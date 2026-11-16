@@ -37,7 +37,8 @@ flowchart TB
 Dependencies D1 to D10 allow: `expo`, `react`, `react-native`, `expo-status-bar`,
 `@react-native-async-storage/async-storage`, `react-native-safe-area-context`, and for
 development `typescript`, `@types/react`, `jest`, `jest-expo`,
-`@testing-library/react-native`, `eslint`, `eslint-config-expo`. Anything else stops with
+`@testing-library/react-native` (with `react-test-renderer` at exactly the installed `react`
+version, which it needs as a peer), `eslint`, `eslint-config-expo`. Anything else stops with
 `needs-decision`.
 
 ## Why, and what else was considered
