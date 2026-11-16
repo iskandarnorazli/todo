@@ -27,20 +27,20 @@
     ]
   },
   "dependencies": {
-    "@expo/metro-runtime": "*",
+    "@expo/metro-runtime": "~58.0.17",
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~58.0.25",
     "expo-status-bar": "~58.0.5",
     "react": "19.3.0",
-    "react-dom": "*",
+    "react-dom": "19.3.0",
     "react-native": "~0.88.1",
     "react-native-safe-area-context": "~5.11.1",
-    "react-native-web": "*"
+    "react-native-web": "~0.21.4"
   },
   "devDependencies": {
-    "@playwright/test": "*",
+    "@playwright/test": "^1.65.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "*",
+    "@types/node": "^26.6.6",
     "@types/react": "~19.3.0",
     "eslint": "^9.30.0",
     "eslint-config-expo": "~58.0.4",
