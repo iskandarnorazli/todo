@@ -3,6 +3,7 @@ name: CI
 # Every push to main, every pull request, and on demand. Ubuntu and Windows run the same
 # `npm run ci`: expo lint, typecheck, doc checks, Jest, and an Android JS bundle
 # (expo export), which catches import and Metro errors without an emulator (D9).
+# Ubuntu also runs the Playwright e2e and flow specs on the react-native-web render (D15).
 
 on:
   push:
@@ -37,3 +38,27 @@ jobs:
         env:
           EXPO_NO_TELEMETRY: "1"
           CI: "1"
+
+  e2e:
+    name: E2E and flow budgets (ubuntu-latest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+        env:
+          EXPO_NO_TELEMETRY: "1"
+          CI: "1"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/

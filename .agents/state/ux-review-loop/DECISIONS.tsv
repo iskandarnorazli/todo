@@ -1,0 +1,4 @@
+ts	phase	decision	why	evidence	result
+2026-11-16T10:26:21Z	plan	opened task ux-review-loop	Owner sees UI snapshots in PRs and issues, files bugs and UX feedback with screenshots, navigates and edits UX flows with step budgets, and reviews and comments on issues		open
+2026-11-16T10:26:21Z	plan	playbook none	infra for review; owner chose the design 2026-11-16 (inline PR snapshots, web render for todo, enforced step budgets)		
+2026-11-16T10:26:21Z	build	phase plan -> build	owner chose options		build

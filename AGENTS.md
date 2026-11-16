@@ -35,6 +35,15 @@ Every module, type and signature the issues need already exists, with bodies tha
 - **The reducer's test calls `checkMachine`** (`src/testing/checkMachine.ts`) for both tables, then the case tests the issue lists, then the seeded fast-check sequence test.
 - The rules and the checks that enforce them are in `docs/ARCHITECTURE.md`, "Module rules and what enforces them".
 
+## UI work is reviewed from screenshots
+
+Follow the `ui-evidence` skill for any change to what the screen shows, any UI bug and any
+design option. In short: states and flows have ids in `docs/UX_FLOWS.md`; built states are
+captured by `npm run snapshots` (the react-native-web render, D15, API stubbed); flow specs
+count their steps against the doc's budget in `npm run e2e`; the "UI snapshots" workflow posts
+before/after images on the PR; the PR body adds phone screenshots from Expo Go; a UI PR carries
+`needs-owner-review` and leaves draft only after the owner has commented.
+
 ## Which issues
 
 - Work only on issues labelled `ready:antigravity` with no `wip:` label. An empty queue means stop and say so.
@@ -62,6 +71,9 @@ Every module, type and signature the issues need already exists, with bodies tha
 | Everything CI runs | `npm run ci` (lint, typecheck, doc checks, tests, Android JS bundle) |
 | Tests | `npm test` |
 | Charts match transition tables | `node scripts/check-state-machines.mjs` |
+| UX doc matches e2e code | `node scripts/check-ux.mjs` |
+| E2E and flow budgets (web render) | `npm run e2e` (first run: `npx playwright install chromium`) |
+| Screenshots of every built state | `SNAP_DIR=snapshots npm run snapshots` |
 | One test file | `npm test -- todosReducer` |
 | Run the app | `npx expo start`, then Expo Go on a phone, or `a` / `w` for Android emulator / web |
 
