@@ -19,10 +19,10 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "*",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "*",
     "expo-status-bar": "*",
-    "react": "*",
+    "react": "19.3.0",
     "react-native": "*",
     "react-native-safe-area-context": "*"
   },
@@ -33,6 +33,6 @@
     "eslint-config-expo": "*",
     "jest": "*",
     "jest-expo": "*",
-    "typescript": "*"
+    "typescript": "~6.0.3"
   }
 }
