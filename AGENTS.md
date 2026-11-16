@@ -36,6 +36,16 @@ Every module, type and signature the issues need already exists, with bodies tha
 - **The reducer's test calls `checkMachine`** (`src/testing/checkMachine.ts`) for both tables, then the case tests the issue lists, then the seeded fast-check sequence test.
 - The rules and the checks that enforce them are in `docs/ARCHITECTURE.md`, "Module rules and what enforces them".
 
+## Changing behaviour and tests
+
+Before you edit an existing test, a transition table, `docs/STATE_MACHINES.md`,
+`docs/UX_FLOWS.md`, `docs/API.md` or `src/api/messages.ts`, read the `changing-behaviour` skill.
+Name the kind of change (new behaviour, refactor, decided change, wrong test); add a state
+through its whole chain (chart, types, table, reducer, `checkMachine` samples, UX rows, screens);
+and run `node scripts/check-test-diff.mjs origin/main` before you push. The `Test guard` CI check
+fails on anything that can weaken the tests until the owner adds `test-change-approved`. Never
+add that label yourself.
+
 ## UI work is reviewed from screenshots
 
 Follow the `ui-evidence` skill for any change to what the screen shows, any UI bug and any
@@ -63,7 +73,7 @@ before/after images on the PR; the PR body adds phone screenshots from Expo Go; 
 3. Commit as `Iskandar Norazli <111472977+iskandarnorazli@users.noreply.github.com>`, with no AI or Co-Authored-By lines. The message states the tests added, the commands run with their results, and the negative control: the fix turned off, the new test failing.
 4. Push the branch and open a **draft** PR. Never push `main`, never force-push, never merge.
 5. Comment on the issue: each gate line, its command and its result. Remove `wip:`, add `needs-review`. Never close an issue; the owner or a reviewer who did not build it does.
-6. Stop and leave a comment when the work needs a file the issue does not list, a design decision, or a change to an existing test's expectation.
+6. Stop and leave a comment when the work needs a file the issue does not list, a design decision, or a change to an existing test's expectation (the `changing-behaviour` skill says which changes those are).
 
 ## Gate commands
 
@@ -73,6 +83,7 @@ before/after images on the PR; the PR body adds phone screenshots from Expo Go; 
 | Tests | `npm test` |
 | Charts match transition tables | `node scripts/check-state-machines.mjs` |
 | UX doc matches e2e code | `node scripts/check-ux.mjs` |
+| Nothing weakens the tests | `node scripts/check-test-diff.mjs origin/main` |
 | E2E and flow budgets (web render) | `npm run e2e` (first run: `npx playwright install chromium`) |
 | Screenshots of every built state | `SNAP_DIR=snapshots npm run snapshots` |
 | One test file | `npm test -- todosReducer` |

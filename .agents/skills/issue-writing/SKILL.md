@@ -63,6 +63,7 @@ In scope: ...  Must not change: ...
 - [ ] Negative control: with local ids replaced by the server id, the same command fails on that test
 - [ ] `npm run ci` -> exit 0
 - [ ] Ubuntu and Windows CI jobs green on the PR
+- [ ] `Test guard` green with no `test-change-approved` label (or: the owner approved changing <test>, because <decision>)
 ```
 
 Write the expected count only when the issue fixes the test list; otherwise name the tests.

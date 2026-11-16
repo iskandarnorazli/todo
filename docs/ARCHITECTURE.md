@@ -57,6 +57,7 @@ web render and e2e (D15): `react-dom`, `react-native-web`, `@expo/metro-runtime`
 | Components (`src/components/`) take props; they import no API, storage or hook module | lint: `no-restricted-imports` patterns |
 | The lint rules above report their known violations and only those | `node scripts/check-lint-rules.mjs` |
 | `docs/UX_FLOWS.md` and `e2e/` agree on states and flows | `node scripts/check-ux.mjs` |
+| No PR weakens the tests without the owner's `test-change-approved` label | `scripts/check-test-diff.mjs` in the `Test guard` workflow |
 | Each enforced flow stays within its step budget | flow specs (`startFlow`) in `npm run e2e` |
 | No `Date.now()`, `new Date()` or `Math.random()` in `src/` | lint: `no-restricted-syntax` |
 | Every user-facing error text comes from `src/api/messages.ts` | type: `Record<ApiErrorKind, string>` |
