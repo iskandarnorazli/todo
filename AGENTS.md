@@ -9,7 +9,8 @@ JSONPlaceholder API. The brief, as numbered requirements T1-T16, is
 [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md); only the owner changes it. Decisions are
 numbered in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); the API contract and its quirks
 are [`docs/API.md`](docs/API.md); flows with states are
-[`docs/STATE_MACHINES.md`](docs/STATE_MACHINES.md). The plan of record is the GitHub
+[`docs/STATE_MACHINES.md`](docs/STATE_MACHINES.md); screen states, user flows and their step budgets
+are [`docs/UX_FLOWS.md`](docs/UX_FLOWS.md). The plan of record is the GitHub
 milestones and [`docs/ROADMAP.md`](docs/ROADMAP.md). The assessors grade working features,
 API handling, loading and error states, readable code and component structure: write for a
 reviewer who reads every file.
