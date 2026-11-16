@@ -52,6 +52,7 @@ version, which it needs as a peer), `fast-check` (D12), `eslint`, `eslint-config
 | Only `src/api/todosApi.ts` calls `fetch` | lint: `no-restricted-globals` |
 | Only `src/todos/storage.ts` imports AsyncStorage | lint: `no-restricted-imports` |
 | Components (`src/components/`) take props; they import no API, storage or hook module | lint: `no-restricted-imports` patterns |
+| The lint rules above report their known violations and only those | `node scripts/check-lint-rules.mjs` |
 | No `Date.now()`, `new Date()` or `Math.random()` in `src/` | lint: `no-restricted-syntax` |
 | Every user-facing error text comes from `src/api/messages.ts` | type: `Record<ApiErrorKind, string>` |
 | Charts in `docs/STATE_MACHINES.md` equal the tables | `node scripts/check-state-machines.mjs` |

@@ -37,9 +37,16 @@ module.exports = defineConfig([
     files: ['src/components/**/*.{ts,tsx}'],
     ignores: ['**/*.test.{ts,tsx}'],
     rules: {
+      // This block replaces the src-wide no-restricted-imports, so it repeats the AsyncStorage ban.
       'no-restricted-imports': [
         'error',
         {
+          paths: [
+            {
+              name: '@react-native-async-storage/async-storage',
+              message: 'Only src/todos/storage.ts touches AsyncStorage (D5).',
+            },
+          ],
           patterns: [
             {
               group: ['**/api/todosApi*', '**/todos/storage*', '**/todos/useTodos*', '**/todos/todosReducer*'],
