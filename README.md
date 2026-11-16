@@ -20,6 +20,7 @@ npx expo start        # scan the QR code with Expo Go; or press a (Android) / w 
 ```sh
 npm test              # Jest
 npm run ci            # lint, typecheck, doc checks, tests, Android JS bundle (what CI runs)
+npm run e2e           # Playwright on the web render, flow step budgets
 ```
 
 ## Documents
@@ -30,4 +31,5 @@ npm run ci            # lint, typecheck, doc checks, tests, Android JS bundle (w
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Decisions D1-D10 and what else was considered |
 | [docs/API.md](docs/API.md) | The JSONPlaceholder calls, failures and quirks |
 | [docs/STATE_MACHINES.md](docs/STATE_MACHINES.md) | The screen's states and events |
+| [docs/UX_FLOWS.md](docs/UX_FLOWS.md) | Screen states, user flows with step budgets, and how to review the UI |
 | [AGENTS.md](AGENTS.md) | Rules for anyone (or any agent) working on an issue |

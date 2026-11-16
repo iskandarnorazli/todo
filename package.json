@@ -9,25 +9,38 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p e2e",
     "test": "jest",
-    "check:docs": "node scripts/check-docs.mjs && node scripts/check-skill-mirror.mjs",
+    "check:docs": "node scripts/check-docs.mjs && node scripts/check-skill-mirror.mjs && node scripts/check-state-machines.mjs && node scripts/check-ux.mjs",
     "bundle": "expo export --platform android --output-dir dist",
-    "ci": "npm run lint && npm run typecheck && npm run check:docs && npm test -- --ci && npm run bundle"
+    "ci": "npm run lint && npm run check:lint-rules && npm run typecheck && npm run check:docs && npm test -- --ci && npm run bundle",
+    "check:lint-rules": "node scripts/check-lint-rules.mjs",
+    "web:build": "expo export --platform web --output-dir dist-web",
+    "e2e": "playwright test --project=e2e",
+    "snapshots": "playwright test --project=snapshots"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/e2e/"
+    ]
   },
   "dependencies": {
+    "@expo/metro-runtime": "~58.0.17",
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~58.0.25",
     "expo-status-bar": "~58.0.5",
     "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-native": "~0.88.1",
-    "react-native-safe-area-context": "~5.11.1"
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-web": "~0.21.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/jest": "^30.0.0",
+    "@types/node": "^26.6.6",
     "@types/react": "~19.3.0",
     "eslint": "^9.30.0",
     "eslint-config-expo": "~58.0.4",

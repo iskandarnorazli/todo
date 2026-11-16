@@ -9,7 +9,8 @@ JSONPlaceholder API. The brief, as numbered requirements T1-T16, is
 [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md); only the owner changes it. Decisions are
 numbered in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); the API contract and its quirks
 are [`docs/API.md`](docs/API.md); flows with states are
-[`docs/STATE_MACHINES.md`](docs/STATE_MACHINES.md). The plan of record is the GitHub
+[`docs/STATE_MACHINES.md`](docs/STATE_MACHINES.md); screen states, user flows and their step budgets
+are [`docs/UX_FLOWS.md`](docs/UX_FLOWS.md). The plan of record is the GitHub
 milestones and [`docs/ROADMAP.md`](docs/ROADMAP.md). The assessors grade working features,
 API handling, loading and error states, readable code and component structure: write for a
 reviewer who reads every file.
@@ -20,9 +21,29 @@ reviewer who reads every file.
 |---|---|
 | `App.tsx` | Root: providers and the one screen |
 | `src/api/` | `todosApi.ts`: the only code that calls `fetch` (timeout, status check, parsing) |
-| `src/todos/` | `todosReducer.ts` (pure state machine), `useTodos.ts` (the hook that runs it), `storage.ts` (AsyncStorage, D5) |
+| `src/todos/` | `types.ts` (states, events), `todosReducer.ts` (tables and the pure reducer), `useTodos.ts` (the hook that runs it), `storage.ts` (AsyncStorage, D5), `validateTitle.ts` |
+| `src/lib/`, `src/testing/` | `machine.ts` (the `Transition` type), `notImplemented.ts`; `checkMachine.ts` (the pair-table test) |
 | `src/components/` | Presentational components: `TodoList`, `TodoItem`, `AddTodoForm`, `LoadingState`, `ErrorState`, `EmptyState` |
 | `.agents/state/` | task state (the `task-state` skill); the handoff between agents |
+
+## The skeleton is the contract (D11-D14)
+
+Every module, type and signature the issues need already exists, with bodies that call
+`notImplemented('#<issue> ...')`. An issue fills the bodies its number names.
+
+- **Do not change a skeleton signature, type, export or file location.** If a body cannot be written behind the signature as it is, stop with `needs-decision` and say what it lacks.
+- **Do not add a second way to do a task** the skeleton covers (another fetch wrapper, another store, error text outside `src/api/messages.ts`).
+- **The reducer's test calls `checkMachine`** (`src/testing/checkMachine.ts`) for both tables, then the case tests the issue lists, then the seeded fast-check sequence test.
+- The rules and the checks that enforce them are in `docs/ARCHITECTURE.md`, "Module rules and what enforces them".
+
+## UI work is reviewed from screenshots
+
+Follow the `ui-evidence` skill for any change to what the screen shows, any UI bug and any
+design option. In short: states and flows have ids in `docs/UX_FLOWS.md`; built states are
+captured by `npm run snapshots` (the react-native-web render, D15, API stubbed); flow specs
+count their steps against the doc's budget in `npm run e2e`; the "UI snapshots" workflow posts
+before/after images on the PR; the PR body adds phone screenshots from Expo Go; a UI PR carries
+`needs-owner-review` and leaves draft only after the owner has commented.
 
 ## Which issues
 
@@ -50,6 +71,10 @@ reviewer who reads every file.
 |---|---|
 | Everything CI runs | `npm run ci` (lint, typecheck, doc checks, tests, Android JS bundle) |
 | Tests | `npm test` |
+| Charts match transition tables | `node scripts/check-state-machines.mjs` |
+| UX doc matches e2e code | `node scripts/check-ux.mjs` |
+| E2E and flow budgets (web render) | `npm run e2e` (first run: `npx playwright install chromium`) |
+| Screenshots of every built state | `SNAP_DIR=snapshots npm run snapshots` |
 | One test file | `npm test -- todosReducer` |
 | Run the app | `npx expo start`, then Expo Go on a phone, or `a` / `w` for Android emulator / web |
 

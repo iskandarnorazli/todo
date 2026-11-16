@@ -1,0 +1,29 @@
+name: UX feedback
+description: A flow takes too many steps, a screen confuses, or you have a better idea.
+labels: ["ux", "needs-triage"]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Flow or state
+      description: Ids from docs/UX_FLOWS.md.
+      placeholder: "F2, S1.list"
+    validations: { required: true }
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: [ "Too many steps", "Hard to find", "Unclear text or feedback", "Looks wrong", "New idea" ]
+    validations: { required: true }
+  - type: textarea
+    id: now
+    attributes:
+      label: What happens now
+      description: Link the snapshot comment or drag a screenshot here.
+    validations: { required: true }
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like instead
+      description: A sketch, a reference, or the new step budget for the flow.
+    validations: { required: true }

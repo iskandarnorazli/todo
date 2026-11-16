@@ -1,0 +1,41 @@
+name: Bug
+description: Something on screen or in the API does not do what it should.
+labels: ["bug", "needs-triage"]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: The state or flow id from docs/UX_FLOWS.md (S1.error, F2).
+      placeholder: "S1.list"
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+        2.
+        3.
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+      description: And the requirement (T) or decision (D) that says so, if you know it.
+    validations: { required: true }
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+    validations: { required: true }
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag images here. An agent can add one with the "UI snapshots" workflow (Actions, Run workflow, this issue's number).
+  - type: input
+    id: env
+    attributes:
+      label: Browser, device, commit
+      placeholder: "Expo Go on Pixel 8 / iPhone 15, or web render; main @ abc1234"

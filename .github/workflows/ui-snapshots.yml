@@ -1,0 +1,108 @@
+name: UI snapshots
+
+# Screenshots for review (docs/UX_FLOWS.md, "How the owner takes part"): the react-native-web
+# render (D15) with the API stubbed (e2e/api-stub.ts).
+# - pull_request: captures every built screen state and the flow filmstrips, stores them on the
+#   ui-snapshots branch under pr-<n>/<sha>/, and keeps one "UI snapshots" comment on the PR up to
+#   date (main's images beside this run's).
+# - push to main: refreshes main/latest/, the "before" column.
+# - workflow_dispatch: posts the chosen states or flows as a new comment on any issue or PR.
+# Informational: not a required check. Images live on a branch so comments stay readable.
+
+on:
+  pull_request:
+    paths: [ "App.tsx", "src/**", "e2e/**", "docs/UX_FLOWS.md", "playwright.config.ts", "app.json", "package.json", "scripts/snapshot-comment.mjs", ".github/workflows/ui-snapshots.yml" ]
+  push:
+    branches: [ "main" ]
+    paths: [ "App.tsx", "src/**", "e2e/**", "docs/UX_FLOWS.md", "playwright.config.ts", "app.json", "package.json" ]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: "Issue or PR number to post the screenshots on"
+        required: true
+      only:
+        description: "State or flow ids, comma separated (S1.list,F2); empty = everything built"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: ui-snapshots-${{ github.ref }}-${{ github.event.inputs.issue }}
+  cancel-in-progress: true
+
+jobs:
+  snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Capture screens and flow filmstrips
+        env:
+          SNAP_DIR: snapshots
+          SNAP_ONLY: ${{ github.event.inputs.only }}
+          EXPO_NO_TELEMETRY: "1"
+          CI: "1"
+        run: |
+          set +e
+          npx playwright test --project=snapshots --project=e2e
+          echo "status=$?" >> "$GITHUB_ENV"
+          mkdir -p snapshots
+      - name: Where the images go
+        run: |
+          case "${{ github.event_name }}" in
+            pull_request) echo "DEST=pr-${{ github.event.pull_request.number }}/${{ github.event.pull_request.head.sha }}" >> "$GITHUB_ENV"
+                          echo "TARGET=${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+                          echo "SNAP_SHA=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_ENV" ;;
+            push)         echo "DEST=main/latest" >> "$GITHUB_ENV"
+                          echo "SNAP_SHA=${{ github.sha }}" >> "$GITHUB_ENV" ;;
+            *)            echo "DEST=issue-${{ github.event.inputs.issue }}/${{ github.run_id }}" >> "$GITHUB_ENV"
+                          echo "TARGET=${{ github.event.inputs.issue }}" >> "$GITHUB_ENV"
+                          echo "SNAP_SHA=${{ github.sha }}" >> "$GITHUB_ENV" ;;
+          esac
+      - name: Publish to the ui-snapshots branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git fetch -q origin ui-snapshots; then
+            git worktree add ../shots FETCH_HEAD
+            git -C ../shots checkout -q -B ui-snapshots
+          else
+            git worktree add --orphan -b ui-snapshots ../shots
+          fi
+          rm -rf "../shots/$DEST" && mkdir -p "../shots/$DEST"
+          cp -r snapshots/. "../shots/$DEST/"
+          git -C ../shots add -A
+          git -C ../shots commit -q -m "Snapshots: $DEST" || { echo "no change"; exit 0; }
+          for i in 1 2 3; do
+            git -C ../shots push -q origin ui-snapshots && exit 0
+            git -C ../shots pull -q --rebase origin ui-snapshots
+          done
+          exit 1
+      - name: Comment
+        if: env.TARGET != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SNAP_TITLE: ${{ github.event_name == 'pull_request' && 'UI snapshots' || format('UI snapshots requested in run {0}', github.run_id) }}
+        run: |
+          set -euo pipefail
+          node scripts/snapshot-comment.mjs ../shots "$DEST" main/latest > comment.md
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" --paginate --jq '.[] | select(.body | startswith("<!-- ui-snapshots -->")) | .id' | head -1)
+            if [ -n "$id" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F body=@comment.md >/dev/null
+            else gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" -F body=@comment.md >/dev/null; fi
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$TARGET/comments" -F body=@comment.md >/dev/null
+          fi
+      - name: Fail if a flow or capture failed
+        run: exit "${status:-1}"
