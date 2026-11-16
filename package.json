@@ -11,7 +11,7 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "check:docs": "node scripts/check-docs.mjs && node scripts/check-skill-mirror.mjs",
+    "check:docs": "node scripts/check-docs.mjs && node scripts/check-skill-mirror.mjs && node scripts/check-state-machines.mjs",
     "bundle": "expo export --platform android --output-dir dist",
     "ci": "npm run lint && npm run typecheck && npm run check:docs && npm test -- --ci && npm run bundle"
   },

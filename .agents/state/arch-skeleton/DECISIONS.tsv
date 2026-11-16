@@ -1,0 +1,6 @@
+ts	phase	decision	why	evidence	result
+2026-11-16T10:08:52Z	plan	opened task arch-skeleton	Constrain other agents so results are verifiable and consistent: lock the code's shape in a skeleton, enforce it with checks, and make tests deterministic		open
+2026-11-16T10:08:52Z	plan	playbook none	architect skill phases B-D, candidates compared in chat (arena runners skipped to save tokens)		
+2026-11-16T10:08:52Z	plan	feature modules + pure core; seeded model-based tests; reducers + transition tables; skeleton PR	owner answers 2026-11-16	chat	D17-D20
+2026-11-16T10:08:57Z	build	phase plan -> build	owner chose candidates		build
+2026-11-16T10:08:57Z	build	feature modules + pure core; seeded model-based tests; reducers + transition tables; skeleton PR	owner answers 2026-11-16	chat	D17-D20

@@ -20,9 +20,20 @@ reviewer who reads every file.
 |---|---|
 | `App.tsx` | Root: providers and the one screen |
 | `src/api/` | `todosApi.ts`: the only code that calls `fetch` (timeout, status check, parsing) |
-| `src/todos/` | `todosReducer.ts` (pure state machine), `useTodos.ts` (the hook that runs it), `storage.ts` (AsyncStorage, D5) |
+| `src/todos/` | `types.ts` (states, events), `todosReducer.ts` (tables and the pure reducer), `useTodos.ts` (the hook that runs it), `storage.ts` (AsyncStorage, D5), `validateTitle.ts` |
+| `src/lib/`, `src/testing/` | `machine.ts` (the `Transition` type), `notImplemented.ts`; `checkMachine.ts` (the pair-table test) |
 | `src/components/` | Presentational components: `TodoList`, `TodoItem`, `AddTodoForm`, `LoadingState`, `ErrorState`, `EmptyState` |
 | `.agents/state/` | task state (the `task-state` skill); the handoff between agents |
+
+## The skeleton is the contract (D11-D14)
+
+Every module, type and signature the issues need already exists, with bodies that call
+`notImplemented('#<issue> ...')`. An issue fills the bodies its number names.
+
+- **Do not change a skeleton signature, type, export or file location.** If a body cannot be written behind the signature as it is, stop with `needs-decision` and say what it lacks.
+- **Do not add a second way to do a task** the skeleton covers (another fetch wrapper, another store, error text outside `src/api/messages.ts`).
+- **The reducer's test calls `checkMachine`** (`src/testing/checkMachine.ts`) for both tables, then the case tests the issue lists, then the seeded fast-check sequence test.
+- The rules and the checks that enforce them are in `docs/ARCHITECTURE.md`, "Module rules and what enforces them".
 
 ## Which issues
 
@@ -50,6 +61,7 @@ reviewer who reads every file.
 |---|---|
 | Everything CI runs | `npm run ci` (lint, typecheck, doc checks, tests, Android JS bundle) |
 | Tests | `npm test` |
+| Charts match transition tables | `node scripts/check-state-machines.mjs` |
 | One test file | `npm test -- todosReducer` |
 | Run the app | `npx expo start`, then Expo Go on a phone, or `a` / `w` for Android emulator / web |
 
