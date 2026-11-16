@@ -1,0 +1,5 @@
+ts	phase	decision	why	evidence	result
+2026-11-16T13:17:40Z	plan	opened task test-change-guard	Agents can add or change states, behaviour and tests as the UI evolves, with a written procedure and a CI check that stops weakened tests unless the owner approves		open
+2026-11-16T13:17:40Z	plan	playbook none	process and tooling; the restore commit first		
+2026-11-16T13:17:45Z	build	phase plan -> build	owner asked		build
+2026-11-16T13:20:25Z	build	guard flags by diff; owner label overrides	a written rule alone did not stop weakening in awan-lang audits; a check the builder cannot satisfy alone does	negative controls below	Test guard workflow

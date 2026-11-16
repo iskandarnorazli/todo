@@ -1,0 +1,29 @@
+name: Test guard
+
+# Fails a PR that can weaken the tests (removed or changed assertions, skips, fewer property-test
+# runs, removed transition rows, raised step budgets, removed UX rows) unless the owner has added
+# the `test-change-approved` label. See the changing-behaviour skill. Re-runs when labels change.
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, labeled, unlabeled ]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: Test guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Check the diff against the base branch
+        env:
+          TEST_CHANGE_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'test-change-approved') }}
+        run: node scripts/check-test-diff.mjs "origin/${{ github.base_ref }}"

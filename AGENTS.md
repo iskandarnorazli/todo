@@ -9,7 +9,8 @@ JSONPlaceholder API. The brief, as numbered requirements T1-T16, is
 [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md); only the owner changes it. Decisions are
 numbered in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); the API contract and its quirks
 are [`docs/API.md`](docs/API.md); flows with states are
-[`docs/STATE_MACHINES.md`](docs/STATE_MACHINES.md). The plan of record is the GitHub
+[`docs/STATE_MACHINES.md`](docs/STATE_MACHINES.md); screen states, user flows and their step budgets
+are [`docs/UX_FLOWS.md`](docs/UX_FLOWS.md). The plan of record is the GitHub
 milestones and [`docs/ROADMAP.md`](docs/ROADMAP.md). The assessors grade working features,
 API handling, loading and error states, readable code and component structure: write for a
 reviewer who reads every file.
@@ -20,9 +21,39 @@ reviewer who reads every file.
 |---|---|
 | `App.tsx` | Root: providers and the one screen |
 | `src/api/` | `todosApi.ts`: the only code that calls `fetch` (timeout, status check, parsing) |
-| `src/todos/` | `todosReducer.ts` (pure state machine), `useTodos.ts` (the hook that runs it), `storage.ts` (AsyncStorage, D5) |
+| `src/todos/` | `types.ts` (states, events), `todosReducer.ts` (tables and the pure reducer), `useTodos.ts` (the hook that runs it), `storage.ts` (AsyncStorage, D5), `validateTitle.ts` |
+| `src/lib/`, `src/testing/` | `machine.ts` (the `Transition` type), `notImplemented.ts`; `checkMachine.ts` (the pair-table test) |
 | `src/components/` | Presentational components: `TodoList`, `TodoItem`, `AddTodoForm`, `LoadingState`, `ErrorState`, `EmptyState` |
 | `.agents/state/` | task state (the `task-state` skill); the handoff between agents |
+
+## The skeleton is the contract (D11-D14)
+
+Every module, type and signature the issues need already exists, with bodies that call
+`notImplemented('#<issue> ...')`. An issue fills the bodies its number names.
+
+- **Do not change a skeleton signature, type, export or file location.** If a body cannot be written behind the signature as it is, stop with `needs-decision` and say what it lacks.
+- **Do not add a second way to do a task** the skeleton covers (another fetch wrapper, another store, error text outside `src/api/messages.ts`).
+- **The reducer's test calls `checkMachine`** (`src/testing/checkMachine.ts`) for both tables, then the case tests the issue lists, then the seeded fast-check sequence test.
+- The rules and the checks that enforce them are in `docs/ARCHITECTURE.md`, "Module rules and what enforces them".
+
+## Changing behaviour and tests
+
+Before you edit an existing test, a transition table, `docs/STATE_MACHINES.md`,
+`docs/UX_FLOWS.md`, `docs/API.md` or `src/api/messages.ts`, read the `changing-behaviour` skill.
+Name the kind of change (new behaviour, refactor, decided change, wrong test); add a state
+through its whole chain (chart, types, table, reducer, `checkMachine` samples, UX rows, screens);
+and run `node scripts/check-test-diff.mjs origin/main` before you push. The `Test guard` CI check
+fails on anything that can weaken the tests until the owner adds `test-change-approved`. Never
+add that label yourself.
+
+## UI work is reviewed from screenshots
+
+Follow the `ui-evidence` skill for any change to what the screen shows, any UI bug and any
+design option. In short: states and flows have ids in `docs/UX_FLOWS.md`; built states are
+captured by `npm run snapshots` (the react-native-web render, D15, API stubbed); flow specs
+count their steps against the doc's budget in `npm run e2e`; the "UI snapshots" workflow posts
+before/after images on the PR; the PR body adds phone screenshots from Expo Go; a UI PR carries
+`needs-owner-review` and leaves draft only after the owner has commented.
 
 ## Which issues
 
@@ -42,7 +73,7 @@ reviewer who reads every file.
 3. Commit as `Iskandar Norazli <111472977+iskandarnorazli@users.noreply.github.com>`, with no AI or Co-Authored-By lines. The message states the tests added, the commands run with their results, and the negative control: the fix turned off, the new test failing.
 4. Push the branch and open a **draft** PR. Never push `main`, never force-push, never merge.
 5. Comment on the issue: each gate line, its command and its result. Remove `wip:`, add `needs-review`. Never close an issue; the owner or a reviewer who did not build it does.
-6. Stop and leave a comment when the work needs a file the issue does not list, a design decision, or a change to an existing test's expectation.
+6. Stop and leave a comment when the work needs a file the issue does not list, a design decision, or a change to an existing test's expectation (the `changing-behaviour` skill says which changes those are).
 
 ## Gate commands
 
@@ -50,6 +81,11 @@ reviewer who reads every file.
 |---|---|
 | Everything CI runs | `npm run ci` (lint, typecheck, doc checks, tests, Android JS bundle) |
 | Tests | `npm test` |
+| Charts match transition tables | `node scripts/check-state-machines.mjs` |
+| UX doc matches e2e code | `node scripts/check-ux.mjs` |
+| Nothing weakens the tests | `node scripts/check-test-diff.mjs origin/main` |
+| E2E and flow budgets (web render) | `npm run e2e` (first run: `npx playwright install chromium`) |
+| Screenshots of every built state | `SNAP_DIR=snapshots npm run snapshots` |
 | One test file | `npm test -- todosReducer` |
 | Run the app | `npx expo start`, then Expo Go on a phone, or `a` / `w` for Android emulator / web |
 

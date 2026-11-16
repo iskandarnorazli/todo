@@ -36,6 +36,8 @@ jobs:
         run: npx expo install --fix
       - name: Resolve a consistent lockfile
         run: npm install --no-audit --no-fund
+      - name: Write the locked versions over any "*" range
+        run: node scripts/pin-star-ranges.mjs
       - name: Show the change
         run: git diff -- package.json && git status --short
       - name: Commit and push

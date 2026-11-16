@@ -63,6 +63,15 @@ In scope: ...  Must not change: ...
 - [ ] Negative control: with local ids replaced by the server id, the same command fails on that test
 - [ ] `npm run ci` -> exit 0
 - [ ] Ubuntu and Windows CI jobs green on the PR
+- [ ] `Test guard` green with no `test-change-approved` label (or: the owner approved changing <test>, because <decision>)
 ```
 
 Write the expected count only when the issue fixes the test list; otherwise name the tests.
+
+A UI issue adds (the `ui-evidence` skill):
+
+```text
+- [ ] States S1.list, S1.empty marked built in docs/UX_FLOWS.md and e2e/screens.ts; the PR's "UI snapshots" comment shows them
+- [ ] F2 enforced: `npm run e2e -- flows/F2` passes within its budget of 2 steps
+- [ ] Phone screenshots from Expo Go in the PR body; owner commented (label needs-owner-review)
+```

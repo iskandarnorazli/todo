@@ -33,13 +33,37 @@ flowchart TB
 | D8 | Tests: Jest with `jest-expo`, React Native Testing Library for components, `global.fetch` stubbed per test. No test calls the real API. | proposed |
 | D9 | CI on Ubuntu and Windows: lint (`expo lint`), typecheck, doc checks, tests, and `expo export --platform android` (bundles the JS, catches import and Metro errors without an emulator). No formal verification. | decided (owner, 2026-11-16) |
 | D10 | Dependency versions follow the Expo SDK (`npx expo install`). `package-lock.json` is committed; a session without network uses the `lockfile` workflow. | proposed |
+| D11 | The skeleton is the contract: every module, type and signature the issues need exists, with bodies that call `notImplemented('#<issue>')`. Issues fill bodies; a signature change stops with `needs-decision`. | decided (owner, 2026-11-16) |
+| D12 | Tests are deterministic: `fetch` is stubbed, timers are fake, ids are counters in state (D3). A seeded model-based test (fast-check) drives random event sequences through `todosReducer` and checks invariants after each step; a failure prints the seed. | decided (owner, 2026-11-16) |
+| D13 | State machines are reducers over discriminated unions with the transition tables exported as data (`src/lib/machine.ts`), checked against the charts by `scripts/check-state-machines.mjs` and against the reducer by `checkMachine`. Considered: XState (a dependency outside the allowed list), `useState` flags (they drift). | decided (owner, 2026-11-16) |
+| D14 | The architecture is enforced by checks (below). A new rule goes in the table and into CI in the same change. | decided (owner, 2026-11-16) |
+| D15 | UI screenshots and e2e flows run on the react-native-web render (`expo export --platform web`, served by `scripts/serve-static.mjs`) with the API stubbed (`e2e/api-stub.ts`); phone screenshots from Expo Go are added to UI PRs by hand. Considered: an Android emulator in CI (native, but 10-15 more minutes per run and flaky), manual only (nothing automatic). | decided (owner, 2026-11-16) |
 
 Dependencies D1 to D10 allow: `expo`, `react`, `react-native`, `expo-status-bar`,
 `@react-native-async-storage/async-storage`, `react-native-safe-area-context`, and for
 development `typescript`, `@types/react`, `jest`, `jest-expo`,
 `@testing-library/react-native` (with `react-test-renderer` at exactly the installed `react`
-version, which it needs as a peer), `eslint`, `eslint-config-expo`. Anything else stops with
+version, which it needs as a peer), `fast-check` (D12), `eslint`, `eslint-config-expo`; for the
+web render and e2e (D15): `react-dom`, `react-native-web`, `@expo/metro-runtime`,
+`@playwright/test`, `@types/node`. Anything else stops with
 `needs-decision`.
+
+## Module rules and what enforces them (D11, D14)
+
+| Rule | Enforced by (all in `npm run ci`) |
+|---|---|
+| Only `src/api/todosApi.ts` calls `fetch` | lint: `no-restricted-globals` |
+| Only `src/todos/storage.ts` imports AsyncStorage | lint: `no-restricted-imports` |
+| Components (`src/components/`) take props; they import no API, storage or hook module | lint: `no-restricted-imports` patterns |
+| The lint rules above report their known violations and only those | `node scripts/check-lint-rules.mjs` |
+| `docs/UX_FLOWS.md` and `e2e/` agree on states and flows | `node scripts/check-ux.mjs` |
+| No PR weakens the tests without the owner's `test-change-approved` label | `scripts/check-test-diff.mjs` in the `Test guard` workflow |
+| Each enforced flow stays within its step budget | flow specs (`startFlow`) in `npm run e2e` |
+| No `Date.now()`, `new Date()` or `Math.random()` in `src/` | lint: `no-restricted-syntax` |
+| Every user-facing error text comes from `src/api/messages.ts` | type: `Record<ApiErrorKind, string>` |
+| Charts in `docs/STATE_MACHINES.md` equal the tables | `node scripts/check-state-machines.mjs` |
+| The reducer follows its tables for every (state, event) pair | `checkMachine` in `src/todos/todosReducer.test.ts` |
+| Invariants hold over random event sequences: `localId`s unique, `nextLocalId` above every local id, a task count changes only by `ADD_OK`, `DELETE` or a reload | fast-check model test (issue #3) |
 
 ## Why, and what else was considered
 
