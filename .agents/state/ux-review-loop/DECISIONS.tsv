@@ -2,3 +2,7 @@ ts	phase	decision	why	evidence	result
 2026-11-16T10:26:21Z	plan	opened task ux-review-loop	Owner sees UI snapshots in PRs and issues, files bugs and UX feedback with screenshots, navigates and edits UX flows with step budgets, and reviews and comments on issues		open
 2026-11-16T10:26:21Z	plan	playbook none	infra for review; owner chose the design 2026-11-16 (inline PR snapshots, web render for todo, enforced step budgets)		
 2026-11-16T10:26:21Z	build	phase plan -> build	owner chose options		build
+2026-11-16T10:36:57Z	build	skipped task 7: todo: react-native-web render, static server, stubbed API, e2e job	not applicable: this repo is the todo app itself		skipped
+2026-11-16T10:36:57Z	verify	phase build -> verify	CI		verify
+2026-11-16T10:36:57Z	review	phase verify -> review	CI green, comment posted	PR comment	review
+2026-11-16T10:36:57Z	review	handoff claude -> human for review	Merge PRs in order; add todo's new required check; try Run workflow on an issue		handed off
