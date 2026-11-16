@@ -1,0 +1,22 @@
+name: Finding
+description: A bug or a problem found in code, CI or tooling, with its evidence.
+labels: ["outline"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: The command or steps, and the output you saw (paste it).
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should happen
+      description: And the R or D id or doc line that says so.
+    validations: { required: true }
+  - type: input
+    id: where
+    attributes:
+      label: Commit and platform
+      placeholder: "abc1234, Windows 11 / ubuntu-latest CI run 123"
+    validations: { required: true }

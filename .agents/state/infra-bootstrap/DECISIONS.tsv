@@ -1,0 +1,9 @@
+ts	phase	decision	why	evidence	result
+2026-11-16T09:15:50Z	plan	opened task infra-bootstrap	Set up infra and CI/CD like awan-lang and Awanfs, map the app design (API client, state, errors), and leave docs, issues and AGENTS.md so another AI can continue		open
+2026-11-16T09:15:50Z	plan	playbook none	greenfield infra bootstrap; steps listed as tasks		
+2026-11-16T09:15:59Z	build	phase plan -> build	owner chose stack and rigor 2026-11-16		build
+2026-11-16T09:15:59Z	build	stack and rigor	owner answers 2026-11-16	chat	see docs/ARCHITECTURE.md D1-D3
+2026-11-16T09:48:21Z	build	D6 cookie, D9 ignore OS metadata, todo D5 stored list wins; push as root main + infra PR; lockfile.yml on main	owner answers 2026-11-16	chat; commits on main	docs updated
+2026-11-16T09:48:21Z	verify	phase build -> verify	CI ran		verify
+2026-11-16T09:48:21Z	review	phase verify -> review	CI green on both platforms	run 43842458810	review
+2026-11-16T09:48:21Z	review	handoff claude -> human for review	Review and merge PR #1; then set branch protection on main; schedule the design session		handed off

@@ -1,0 +1,60 @@
+name: Work package
+description: One unit of work an agent can finish without asking (the issue-writing skill's Definition of Ready).
+labels: ["outline"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: One behaviour a user or a test can observe when this is done. Not an activity.
+    validations: { required: true }
+  - type: input
+    id: refs
+    attributes:
+      label: Requirement and decisions
+      description: T ids from docs/REQUIREMENTS.md and D ids from docs/ARCHITECTURE.md.
+    validations: { required: true }
+  - type: textarea
+    id: invariants
+    attributes:
+      label: Invariants
+      description: What must stay true, each with the test in the Gate that checks it.
+    validations: { required: true }
+  - type: textarea
+    id: gate
+    attributes:
+      label: Gate
+      description: Commands with expected results, the negative control, and both CI jobs. No verb a person must judge.
+      value: |
+        - [ ] `<command>` -> <expected>
+        - [ ] Negative control: with <the fix> reverted, `<command>` fails on <test>
+        - [ ] `npm run ci` -> exit 0
+        - [ ] Ubuntu and Windows CI jobs green on the PR
+    validations: { required: true }
+  - type: textarea
+    id: tests
+    attributes:
+      label: Tests to write first
+    validations: { required: true }
+  - type: textarea
+    id: files
+    attributes:
+      label: Files
+      value: |
+        In scope:
+        Must not change:
+    validations: { required: true }
+  - type: textarea
+    id: stop
+    attributes:
+      label: Stop and ask if
+      value: |
+        - the work needs a file outside the list, a design decision, or a change to an existing test's expectation
+        - it touches anything on the needs-decision list in AGENTS.md
+    validations: { required: true }
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      options: [ "S (under 2 hours)", "M (half a day)" ]
+    validations: { required: true }

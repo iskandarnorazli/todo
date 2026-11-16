@@ -1,0 +1,20 @@
+{
+  "extraKnownMarketplaces": {
+    "cursor-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "cursor/plugins"
+      }
+    },
+    "iskandar-stack": {
+      "source": {
+        "source": "github",
+        "repo": "iskandarnorazli/iskandar-stack"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "pstack@cursor-plugins": true,
+    "iskandar-stack@iskandar-stack": true
+  }
+}

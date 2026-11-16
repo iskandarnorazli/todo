@@ -1,0 +1,39 @@
+name: CI
+
+# Every push to main, every pull request, and on demand. Ubuntu and Windows run the same
+# `npm run ci`: expo lint, typecheck, doc checks, Jest, and an Android JS bundle
+# (expo export), which catches import and Metro errors without an emulator (D9).
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run ci
+        env:
+          EXPO_NO_TELEMETRY: "1"
+          CI: "1"
