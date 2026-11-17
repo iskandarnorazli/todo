@@ -1,3 +1,4 @@
+import * as fc from 'fast-check';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEY, loadTasks, saveTasks, type StoredTasks } from './storage';
 
@@ -57,5 +58,73 @@ describe('storage (D5, T12)', () => {
 
     const result = await saveTasks({ tasks: [], nextLocalId: 1 });
     expect(result).toBe(false);
+  });
+
+  it('returns null when stored tasks have duplicate localIds (D16)', async () => {
+    await AsyncStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        tasks: [
+          { localId: 'local-1', serverId: 201, title: 'One', completed: false },
+          { localId: 'local-1', serverId: 201, title: 'Two', completed: true },
+        ],
+        nextLocalId: 2,
+      }),
+    );
+    await expect(loadTasks()).resolves.toBeNull();
+  });
+
+  it('raises nextLocalId above the highest local-N while keeping tasks unchanged (D16)', async () => {
+    const tasks = [{ localId: 'local-5', serverId: 201, title: 'Five', completed: false }];
+    await AsyncStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ tasks, nextLocalId: 3 }),
+    );
+
+    const loaded = await loadTasks();
+    expect(loaded).toEqual({ tasks, nextLocalId: 6 });
+  });
+
+  it('guarantees unique localIds and nextLocalId above every local-N for any stored list (D16)', async () => {
+    const taskArb = fc.record({
+      localId: fc.oneof(
+        fc.integer({ min: 1, max: 20 }).map((n) => `local-${n}`),
+        fc.integer({ min: 1, max: 20 }).map((n) => `server-${n}`),
+      ),
+      serverId: fc.integer({ min: 1, max: 201 }),
+      title: fc.string({ minLength: 1, maxLength: 20 }),
+      completed: fc.boolean(),
+    });
+
+    await fc.assert(
+      fc.asyncProperty(
+        fc.array(taskArb, { maxLength: 10 }),
+        fc.integer({ min: 1, max: 25 }),
+        async (tasks, nextLocalId) => {
+          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks, nextLocalId }));
+          const loaded = await loadTasks();
+          const hasDuplicates = new Set(tasks.map((t) => t.localId)).size !== tasks.length;
+
+          if (hasDuplicates) {
+            expect(loaded).toBeNull();
+          } else {
+            expect(loaded).not.toBeNull();
+            if (!loaded) return;
+            expect(loaded.tasks).toEqual(tasks);
+            const ids = loaded.tasks.map((t) => t.localId);
+            expect(new Set(ids).size).toBe(ids.length);
+            for (const id of ids) {
+              if (id.startsWith('local-')) {
+                const n = Number(id.slice('local-'.length));
+                if (Number.isInteger(n) && n >= 0) {
+                  expect(loaded.nextLocalId).toBeGreaterThan(n);
+                }
+              }
+            }
+          }
+        },
+      ),
+      { seed: 42, numRuns: 100 },
+    );
   });
 });

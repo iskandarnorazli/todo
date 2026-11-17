@@ -27,13 +27,34 @@ function isStoredTasks(value: unknown): value is StoredTasks {
   );
 }
 
+function validateAndRepair(stored: StoredTasks): StoredTasks | null {
+  const seen = new Set<string>();
+  let maxLocalId = 0;
+
+  for (const task of stored.tasks) {
+    if (seen.has(task.localId)) return null;
+    seen.add(task.localId);
+
+    if (task.localId.startsWith('local-')) {
+      const n = Number(task.localId.slice('local-'.length));
+      if (Number.isInteger(n) && n > maxLocalId) {
+        maxLocalId = n;
+      }
+    }
+  }
+
+  const minNextLocalId = maxLocalId + 1;
+  if (stored.nextLocalId >= minNextLocalId) return stored;
+  return { tasks: stored.tasks, nextLocalId: minNextLocalId };
+}
+
 /** null when nothing is stored or the stored value is unreadable; never throws. */
 export async function loadTasks(): Promise<StoredTasks | null> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     if (raw === null) return null;
     const parsed: unknown = JSON.parse(raw);
-    return isStoredTasks(parsed) ? parsed : null;
+    return isStoredTasks(parsed) ? validateAndRepair(parsed) : null;
   } catch {
     return null;
   }
