@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ADD_ERROR_MESSAGE } from '../api/messages';
+import { colors } from '../theme';
 import type { AddStatus } from '../todos/types';
 
 export type AddTodoFormProps = {
@@ -44,7 +45,7 @@ export function AddTodoForm({ status, add, onDismissError }: AddTodoFormProps) {
           value={draft}
           onChangeText={handleChangeText}
           placeholder="Add a task..."
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor={colors.placeholder}
           returnKeyType="done"
           onSubmitEditing={handleSubmit}
           editable={!isSaving}
@@ -73,25 +74,25 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     minHeight: 44,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: '#cbd5e1',
+    borderColor: colors.border,
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
-    color: '#0f172a',
+    color: colors.textPrimary,
   },
   button: {
     minWidth: 44,
     minHeight: 44,
-    backgroundColor: '#2563eb',
+    backgroundColor: colors.accent,
     borderRadius: 10,
     paddingHorizontal: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonDisabled: { backgroundColor: '#93c5fd' },
-  buttonText: { color: '#ffffff', fontWeight: '600', fontSize: 15 },
-  error: { color: '#dc2626', fontSize: 13, marginTop: 6 },
+  buttonDisabled: { backgroundColor: colors.accentDisabled },
+  buttonText: { color: colors.accentText, fontWeight: '600', fontSize: 15 },
+  error: { color: colors.danger, fontSize: 13, marginTop: 6 },
 });

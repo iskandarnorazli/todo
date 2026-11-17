@@ -1,4 +1,5 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { colors } from '../theme';
 
 export type ReloadConfirmProps = {
   visible: boolean;
@@ -46,7 +47,7 @@ export function ReloadConfirm({ visible, onConfirm, onCancel }: ReloadConfirmPro
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.4)',
+    backgroundColor: colors.backdrop,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
@@ -54,13 +55,13 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
     borderRadius: 14,
     padding: 20,
     gap: 10,
   },
-  title: { fontSize: 18, fontWeight: '700', color: '#0f172a' },
-  body: { fontSize: 14, color: '#475569' },
+  title: { fontSize: 18, fontWeight: '700', color: colors.textPrimary },
+  body: { fontSize: 14, color: colors.textSecondary },
   actions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12, marginTop: 8 },
   cancelBtn: {
     minWidth: 44,
@@ -69,15 +70,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cancelText: { color: '#475569', fontWeight: '600' },
+  cancelText: { color: colors.textSecondary, fontWeight: '600' },
   confirmBtn: {
     minWidth: 44,
     minHeight: 44,
-    backgroundColor: '#dc2626',
+    backgroundColor: colors.danger,
     borderRadius: 8,
     paddingHorizontal: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  confirmText: { color: '#ffffff', fontWeight: '600' },
+  confirmText: { color: colors.accentText, fontWeight: '600' },
 });
