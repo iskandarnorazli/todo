@@ -12,6 +12,8 @@ Web renders at phone width (`390 x 844`):
 
 ## Run it
 
+Prerequisites: **Node 22** (see `.nvmrc`) and the **Expo Go** app on your phone (if running on a device).
+
 ```sh
 npm ci
 npx expo start

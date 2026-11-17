@@ -43,8 +43,8 @@ for (const line of reqLines) {
   if (!/^\| T\d+ \|/.test(line)) continue;
   const cells = line.split('|').map((c) => c.trim());
   const id = cells[1];
-  const proof = cells[4];
-  if (cells.length < 6 || !proof) continue;
+  const proof = cells[4] ?? '';
+  if (cells.length < 6) continue;
   const named = [...proof.matchAll(/`([^`]+\.test\.tsx?)`/g)].map((m) => m[1]);
   if (named.length === 0) {
     problems.push(`docs/REQUIREMENTS.md: ${id} has no test file in Proof (${proof})`);
