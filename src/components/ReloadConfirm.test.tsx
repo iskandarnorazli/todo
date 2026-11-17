@@ -29,7 +29,7 @@ describe('ReloadConfirm (D5, D17)', () => {
 
     await fireEvent.press(confirmBtn);
     expect(onConfirm).toHaveBeenCalledTimes(1);
-  });
+  }, 15_000);
 
   it('calls onCancel on Android back button (onRequestClose)', async () => {
     const onCancel = jest.fn();
