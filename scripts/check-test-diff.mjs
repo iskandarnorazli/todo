@@ -67,7 +67,10 @@ for (const r of removed) {
 for (const a of added) {
   if (!isTest(a.file)) continue;
   if (SKIP.test(a.text)) flags.push(`${a.file}:${a.line} skip/only added: ${a.text}`);
-  if (LOOSE.test(a.text)) warnings.push(`${a.file}:${a.line} loose matcher: ${a.text}`);
+  // `expect(getBy...(...)).toBeTruthy()` is strict: getBy* throws when nothing matches.
+  if (LOOSE.test(a.text) && !/\b(getBy|getAllBy)\w*\(/.test(a.text)) {
+    warnings.push(`${a.file}:${a.line} loose matcher: ${a.text}`);
+  }
 }
 const runs = (list, f) => list.filter((x) => x.file === f).map((x) => x.text.match(/numRuns:\s*(\d+)/)?.[1]).filter(Boolean).map(Number);
 for (const f of new Set(removed.map((r) => r.file))) {
