@@ -16,14 +16,14 @@ not yet written.
 | T1 | Fetch the first 10 tasks from `GET /todos?_limit=10` and list them with title and completion state | #2, #5 | `todosApi.test.ts`, `TodoList.test.tsx` |
 | T2 | Toggle a task between completed and incomplete, locally | #3 | `todosReducer.test.ts` |
 | T3 | A form adds a task through `POST /todos` with the title, `completed: false` and a `userId` such as 1 | #2 | `todosApi.test.ts` |
-| T4 | After a successful POST, the new task appears in the list at once, without reloading the screen | #3, #5 | `todosReducer.test.ts`, `App.test.tsx` |
+| T4 | After a successful POST, the new task appears in the list at once, without reloading the screen | #3, #5 | `todosReducer.test.ts`, `useTodos.test.tsx` |
 | T5 | Delete a task, locally | #3 | `todosReducer.test.ts` |
-| T6 | A loading indicator while tasks are fetched | #7 | `App.test.tsx` |
-| T7 | An error message with a retry action when the fetch fails | #5, #7 | `App.test.tsx` |
-| T8 | An empty state when no tasks remain | #3, #7 | `App.test.tsx` |
-| T9 | Reject empty or whitespace-only titles | PR #1 (`validateTitle`), #7 (form) | `validateTitle.test.ts` |
-| T10 | Disable submission while saving | #3, #7 | `AddTodoForm.test.tsx` |
-| T11 | Show an error message if adding a task fails | #3, #7 | `App.test.tsx` |
+| T6 | A loading indicator while tasks are fetched | #27 | `LoadingState.test.tsx`, `TodosScreen.test.tsx` |
+| T7 | An error message with a retry action when the fetch fails | #5, #27 | `ErrorState.test.tsx`, `TodosScreen.test.tsx` |
+| T8 | An empty state when no tasks remain | #3, #27, #28 | `EmptyState.test.tsx`, `TodosScreen.test.tsx` |
+| T9 | Reject empty or whitespace-only titles | PR #1 (`validateTitle`), #28 (form) | `validateTitle.test.ts`, `AddTodoForm.test.tsx` |
+| T10 | Disable submission while saving | #3, #28 | `AddTodoForm.test.tsx` |
+| T11 | Show an error message if adding a task fails | #3, #28 | `AddTodoForm.test.tsx` |
 | T12 | Bonus: tasks are saved with AsyncStorage and survive an app restart | #4, #5 | `storage.test.ts` |
 
 ## Technical constraints
