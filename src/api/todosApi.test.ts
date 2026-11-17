@@ -143,4 +143,23 @@ describe('todosApi (D4)', () => {
       expect(err.kind).toBe(kind);
     }
   });
+
+  it('throws ApiError(timeout) when headers arrive but response.json() never resolves (#16)', async () => {
+    jest.useFakeTimers();
+
+    globalThis.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => new Promise(() => {}),
+    } as unknown as Response);
+
+    const promise = fetchTodos();
+    const assertion = expect(promise).rejects.toMatchObject({
+      name: 'ApiError',
+      kind: 'timeout',
+    });
+
+    await jest.advanceTimersByTimeAsync(TIMEOUT_MS);
+    await assertion;
+  });
 });
