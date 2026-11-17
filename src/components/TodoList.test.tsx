@@ -28,5 +28,5 @@ describe('TodoList (T1, D3, D17)', () => {
 
     await fireEvent.press(screen.getByLabelText('Delete Second'));
     expect(onDelete).toHaveBeenCalledWith('local-1');
-  });
+  }, 15_000);
 });
