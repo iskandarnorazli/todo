@@ -13,6 +13,7 @@ export type UseTodos = {
   reload(): void;
   /** Validates with validateTitle; returns the validation message, or null when sent. */
   add(title: string): string | null;
+  dismissAddError(): void;
   toggle(localId: string): void;
   remove(localId: string): void;
 };
@@ -112,6 +113,10 @@ export function useTodos(): UseTodos {
     return null;
   }, []);
 
+  const dismissAddError = useCallback(() => {
+    dispatch({ type: 'ADD_DISMISS' });
+  }, []);
+
   const toggle = useCallback((localId: string) => {
     dispatch({ type: 'TOGGLE', localId });
   }, []);
@@ -120,5 +125,5 @@ export function useTodos(): UseTodos {
     dispatch({ type: 'DELETE', localId });
   }, []);
 
-  return { state, retry, reload, add, toggle, remove };
+  return { state, retry, reload, add, dismissAddError, toggle, remove };
 }

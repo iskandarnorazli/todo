@@ -190,4 +190,43 @@ describe('useTodos (D2, D5)', () => {
 
     expect(errorSpy).not.toHaveBeenCalled();
   });
+
+  it('dismissAddError clears an add error to idle and is a no-op otherwise (#22)', async () => {
+    const stored: StoredTasks = {
+      tasks: [{ localId: 'server-1', serverId: 1, title: 'Existing', completed: false }],
+      nextLocalId: 1,
+    };
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+    globalThis.fetch = jest.fn().mockRejectedValueOnce(new TypeError('offline'));
+
+    const { result } = await renderHook(() => useTodos());
+
+    await waitFor(() => {
+      expect(result.current.state.kind).toBe('ready');
+    });
+
+    await act(async () => {
+      result.current.add('Buy milk');
+    });
+
+    await waitFor(() => {
+      expect(result.current.state.kind).toBe('ready');
+      if (result.current.state.kind !== 'ready') return;
+      expect(result.current.state.add.kind).toBe('error');
+    });
+
+    await act(async () => {
+      result.current.dismissAddError();
+    });
+
+    expect(result.current.state.kind).toBe('ready');
+    if (result.current.state.kind !== 'ready') return;
+    expect(result.current.state.add).toEqual({ kind: 'idle' });
+
+    const idleState = result.current.state;
+    await act(async () => {
+      result.current.dismissAddError();
+    });
+    expect(result.current.state).toBe(idleState);
+  });
 });
