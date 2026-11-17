@@ -15,6 +15,7 @@ export function TodoItem({ task, onToggle, onDelete }: TodoItemProps) {
         onPress={() => onToggle(task.localId)}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: task.completed }}
+        aria-checked={task.completed}
       >
         <View style={[styles.checkbox, task.completed && styles.checkboxDone]}>
           {task.completed ? <Text style={styles.checkmark}>✓</Text> : null}
