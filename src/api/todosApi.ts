@@ -26,36 +26,49 @@ async function requestJson<T>(
   guard: (value: unknown) => value is T,
 ): Promise<T> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  let timer: ReturnType<typeof setTimeout> | undefined;
 
-  let response: Response;
-  try {
-    response = await fetch(url, { ...init, signal: controller.signal });
-  } catch (error) {
-    if (controller.signal.aborted || (error instanceof Error && error.name === 'AbortError')) {
-      throw new ApiError('timeout', `Request timed out after ${TIMEOUT_MS}ms`);
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      controller.abort();
+      reject(new ApiError('timeout', `Request timed out after ${TIMEOUT_MS}ms`));
+    }, TIMEOUT_MS);
+  });
+
+  const run = async (): Promise<T> => {
+    let response: Response;
+    try {
+      response = await fetch(url, { ...init, signal: controller.signal });
+    } catch (error) {
+      if (controller.signal.aborted || (error instanceof Error && error.name === 'AbortError')) {
+        throw new ApiError('timeout', `Request timed out after ${TIMEOUT_MS}ms`);
+      }
+      throw new ApiError('network', 'Network request failed');
     }
-    throw new ApiError('network', 'Network request failed');
+
+    if (!response.ok) {
+      throw new ApiError('http', `HTTP ${response.status}`, response.status);
+    }
+
+    let data: unknown;
+    try {
+      data = await response.json();
+    } catch {
+      throw new ApiError('shape', 'Invalid JSON response');
+    }
+
+    if (!guard(data)) {
+      throw new ApiError('shape', 'Unexpected response shape');
+    }
+
+    return data;
+  };
+
+  try {
+    return await Promise.race([run(), timeoutPromise]);
   } finally {
     clearTimeout(timer);
   }
-
-  if (!response.ok) {
-    throw new ApiError('http', `HTTP ${response.status}`, response.status);
-  }
-
-  let data: unknown;
-  try {
-    data = await response.json();
-  } catch {
-    throw new ApiError('shape', 'Invalid JSON response');
-  }
-
-  if (!guard(data)) {
-    throw new ApiError('shape', 'Unexpected response shape');
-  }
-
-  return data;
 }
 
 /** GET /todos?_limit=10. Throws ApiError. */
