@@ -1,6 +1,7 @@
 // One entry per row of the Screens table in docs/UX_FLOWS.md (check-ux.mjs keeps them equal).
 // A built state has `open`, which brings a fresh page to exactly that state with stubbed data.
 import type { Page } from '@playwright/test';
+import { stubApi } from './api-stub';
 
 export type ScreenState = {
   id: string;
@@ -13,8 +14,9 @@ export const SCREENS: ScreenState[] = [
     id: 'S0.home',
     status: 'built',
     open: async (page) => {
+      await stubApi(page);
       await page.goto('/');
-      await page.getByText('Tasks').first().waitFor();
+      await page.getByText('Buy groceries').first().waitFor();
     },
   },
   { id: 'S1.loading', status: 'planned' },
