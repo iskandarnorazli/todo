@@ -39,6 +39,7 @@ flowchart TB
 | D14 | The architecture is enforced by checks (below). A new rule goes in the table and into CI in the same change. | decided (owner, 2026-11-16) |
 | D15 | UI screenshots and e2e flows run on the react-native-web render (`expo export --platform web`, served by `scripts/serve-static.mjs`) with the API stubbed (`e2e/api-stub.ts`); phone screenshots from Expo Go are added to UI PRs by hand. Considered: an Android emulator in CI (native, but 10-15 more minutes per run and flaky), manual only (nothing automatic). | decided (owner, 2026-11-16) |
 | D16 | A stored list is trusted only when its local ids are unique and `nextLocalId` is above every `local-N`. `loadTasks` returns null for duplicate local ids (corrupt) and raises a low `nextLocalId` to one above the highest `local-N` (repair, no data lost). Found in the 2026-11-17 audit: the reducer takes `RESTORED` on trust, so a low counter would later reuse an id. | proposed |
+| D17 | UI layout (M2, #6): Prototype A chosen — top inline Add bar under the header, card task rows (tap row/checkbox to toggle, explicit Delete button, 1 step matching F4 budget 1), header Reload button with in-screen confirm modal (`S1.reloadConfirm`). Screenshots in `docs/design/`. | decided (owner, 2026-11-17) |
 
 Dependencies D1 to D10 allow: `expo`, `react`, `react-native`, `expo-status-bar`,
 `@react-native-async-storage/async-storage`, `react-native-safe-area-context`, and for
