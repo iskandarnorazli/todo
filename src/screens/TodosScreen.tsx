@@ -7,52 +7,55 @@ import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
 import { ReloadConfirm } from '../components/ReloadConfirm';
 import { TodoList } from '../components/TodoList';
+import { colors, layout } from '../theme';
 import { useTodos } from '../todos/useTodos';
 
 export function TodosScreen() {
-  const { state, retry, add, dismissAddError, reload, toggle, remove } = useTodos();
+  const { state, retry, reload, add, dismissAddError, toggle, remove } = useTodos();
   const [confirmReload, setConfirmReload] = useState(false);
   const isReady = state.kind === 'ready';
   const doneCount = isReady ? state.tasks.filter((t) => t.completed).length : 0;
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Tasks</Text>
-          {isReady && state.tasks.length > 0 ? (
-            <Text style={styles.subtitle}>
-              {doneCount} / {state.tasks.length} completed
-            </Text>
+      <View style={styles.content} testID="screen-content">
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Tasks</Text>
+            {isReady && state.tasks.length > 0 ? (
+              <Text style={styles.subtitle}>
+                {doneCount} / {state.tasks.length} completed
+              </Text>
+            ) : null}
+          </View>
+          {isReady ? (
+            <Pressable
+              style={styles.reloadBtn}
+              onPress={() => setConfirmReload(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Reload"
+            >
+              <Text style={styles.reloadText}>Reload</Text>
+            </Pressable>
           ) : null}
         </View>
+
         {isReady ? (
-          <Pressable
-            style={styles.reloadBtn}
-            onPress={() => setConfirmReload(true)}
-            accessibilityRole="button"
-            accessibilityLabel="Reload"
-          >
-            <Text style={styles.reloadText}>Reload</Text>
-          </Pressable>
+          <AddTodoForm status={state.add} add={add} onDismissError={dismissAddError} />
+        ) : null}
+
+        {state.kind === 'hydrating' || state.kind === 'loading' ? <LoadingState /> : null}
+
+        {state.kind === 'failed' ? (
+          <ErrorState message={LIST_ERROR_MESSAGE[state.error.kind]} onRetry={retry} />
+        ) : null}
+
+        {isReady && state.tasks.length === 0 ? <EmptyState /> : null}
+
+        {isReady && state.tasks.length > 0 ? (
+          <TodoList tasks={state.tasks} onToggle={toggle} onDelete={remove} />
         ) : null}
       </View>
-
-      {isReady ? (
-        <AddTodoForm status={state.add} add={add} onDismissError={dismissAddError} />
-      ) : null}
-
-      {state.kind === 'hydrating' || state.kind === 'loading' ? <LoadingState /> : null}
-
-      {state.kind === 'failed' ? (
-        <ErrorState message={LIST_ERROR_MESSAGE[state.error.kind]} onRetry={retry} />
-      ) : null}
-
-      {isReady && state.tasks.length === 0 ? <EmptyState /> : null}
-
-      {isReady && state.tasks.length > 0 ? (
-        <TodoList tasks={state.tasks} onToggle={toggle} onDelete={remove} />
-      ) : null}
 
       <ReloadConfirm
         visible={confirmReload}
@@ -67,7 +70,13 @@ export function TodosScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8fafc' },
+  container: { flex: 1, backgroundColor: colors.background },
+  content: {
+    flex: 1,
+    width: '100%',
+    maxWidth: layout.maxContentWidth,
+    alignSelf: 'center',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -76,18 +85,18 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 10,
   },
-  title: { fontSize: 28, fontWeight: '700', color: '#0f172a' },
-  subtitle: { fontSize: 13, color: '#64748b', marginTop: 2 },
+  title: { fontSize: 28, fontWeight: '700', color: colors.textPrimary },
+  subtitle: { fontSize: 13, color: colors.textSecondary, marginTop: 2 },
   reloadBtn: {
     minWidth: 44,
     minHeight: 44,
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#cbd5e1',
-    backgroundColor: '#ffffff',
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  reloadText: { fontSize: 14, fontWeight: '600', color: '#334155' },
+  reloadText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary },
 });

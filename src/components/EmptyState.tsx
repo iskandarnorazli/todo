@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../theme';
 
 export function EmptyState() {
   return (
@@ -10,5 +11,5 @@ export function EmptyState() {
 
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
-  text: { fontSize: 15, color: '#64748b', textAlign: 'center' },
+  text: { fontSize: 15, color: colors.textSecondary, textAlign: 'center' },
 });

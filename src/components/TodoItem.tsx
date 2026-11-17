@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { colors } from '../theme';
 import type { Task } from '../todos/types';
 
 export type TodoItemProps = {
@@ -40,10 +41,10 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: colors.cardBorder,
     paddingHorizontal: 12,
     paddingVertical: 6,
     gap: 8,
@@ -60,14 +61,14 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#94a3b8',
+    borderColor: colors.checkboxBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkboxDone: { backgroundColor: '#2563eb', borderColor: '#2563eb' },
-  checkmark: { color: '#ffffff', fontSize: 13, fontWeight: '700' },
-  title: { flex: 1, fontSize: 16, color: '#0f172a' },
-  titleDone: { textDecorationLine: 'line-through', color: '#94a3b8' },
+  checkboxDone: { backgroundColor: colors.accent, borderColor: colors.accent },
+  checkmark: { color: colors.accentText, fontSize: 13, fontWeight: '700' },
+  title: { flex: 1, fontSize: 16, color: colors.textPrimary },
+  titleDone: { textDecorationLine: 'line-through', color: colors.textCompleted },
   deleteBtn: {
     minWidth: 44,
     minHeight: 44,
@@ -75,5 +76,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  deleteText: { color: '#dc2626', fontSize: 13, fontWeight: '600' },
+  deleteText: { color: colors.danger, fontSize: 13, fontWeight: '600' },
 });
