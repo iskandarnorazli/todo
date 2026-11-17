@@ -4,6 +4,6 @@ import { EmptyState } from './EmptyState';
 describe('EmptyState (T8)', () => {
   it('renders an empty list message', async () => {
     await render(<EmptyState />);
-    expect(screen.getByText('No tasks yet.')).toBeTruthy();
+    expect(screen.getByText('No tasks left. Add one above.')).toBeTruthy();
   });
 });

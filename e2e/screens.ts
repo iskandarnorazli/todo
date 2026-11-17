@@ -43,11 +43,43 @@ export const SCREENS: ScreenState[] = [
     open: async (page) => {
       await stubApi(page, { list: 'empty' });
       await page.goto('/');
-      await page.getByText('No tasks yet.').first().waitFor();
+      await page.getByText('No tasks left. Add one above.').first().waitFor();
     },
   },
-  { id: 'S1.invalid', status: 'planned' },
-  { id: 'S1.saving', status: 'planned' },
-  { id: 'S1.addError', status: 'planned' },
+  {
+    id: 'S1.invalid',
+    status: 'built',
+    open: async (page) => {
+      await stubApi(page);
+      await page.goto('/');
+      await page.getByText('Buy groceries').first().waitFor();
+      await page.getByRole('button', { name: 'Add' }).click();
+      await page.getByText('Enter a task title.').waitFor();
+    },
+  },
+  {
+    id: 'S1.saving',
+    status: 'built',
+    open: async (page) => {
+      await stubApi(page, { add: 'hang' });
+      await page.goto('/');
+      await page.getByText('Buy groceries').first().waitFor();
+      await page.getByPlaceholder('Add a task...').fill('New task');
+      await page.getByRole('button', { name: 'Add' }).click();
+      await page.getByText('Adding...').waitFor();
+    },
+  },
+  {
+    id: 'S1.addError',
+    status: 'built',
+    open: async (page) => {
+      await stubApi(page, { add: 'error' });
+      await page.goto('/');
+      await page.getByText('Buy groceries').first().waitFor();
+      await page.getByPlaceholder('Add a task...').fill('New task');
+      await page.getByRole('button', { name: 'Add' }).click();
+      await page.getByText("Couldn't add the task.").first().waitFor();
+    },
+  },
   { id: 'S1.reloadConfirm', status: 'planned' },
 ];

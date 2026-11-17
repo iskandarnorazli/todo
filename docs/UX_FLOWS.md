@@ -60,9 +60,9 @@ and adds the setup (with the stubbed API) in `e2e/screens.ts`.
 | S1.list | Tasks | Ten tasks, some completed (T1) | built |
 | S1.error | Tasks | "Couldn't load tasks." with Retry (T7) | built |
 | S1.empty | Tasks | The empty state after the last task is deleted (T8) | built |
-| S1.invalid | Tasks | The form's message after Add with a blank title (T9) | planned |
-| S1.saving | Tasks | The Add button disabled while the POST runs (T10) | planned |
-| S1.addError | Tasks | "Couldn't add the task." under the form (T11) | planned |
+| S1.invalid | Tasks | The form's message after Add with a blank title (T9) | built |
+| S1.saving | Tasks | The Add button disabled while the POST runs (T10) | built |
+| S1.addError | Tasks | "Couldn't add the task." under the form (T11) | built |
 | S1.reloadConfirm | Tasks | The confirm before replacing the list with a fresh fetch (D5) | planned |
 
 ## Flows
@@ -73,7 +73,7 @@ exists and fails CI over budget; `planned` means its screen is not built yet.
 | Flow | Task | Starts on | Budget | Status | Requirements |
 |---|---|---|---|---|---|
 | F1 | See the first ten tasks | App start, nothing stored | 0 | enforced | T1, T6 |
-| F2 | Add a task | S1.list | 2 | planned | T3, T4 |
+| F2 | Add a task | S1.list | 2 | enforced | T3, T4 |
 | F3 | Mark a task done, then not done | S1.list | 2 | enforced | T2 |
 | F4 | Delete a task | S1.list | 1 | enforced | T5 |
 | F5 | Recover from a failed load | S1.error | 1 | enforced | T7 |

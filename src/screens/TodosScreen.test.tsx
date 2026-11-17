@@ -61,8 +61,8 @@ describe('TodosScreen (D2, D17)', () => {
     );
 
     await render(<TodosScreen />);
-    expect(screen.getByText('0 / 0 completed')).toBeTruthy();
-    expect(screen.getByText('No tasks yet.')).toBeTruthy();
+    expect(screen.queryByText('0 / 0 completed')).toBeNull();
+    expect(screen.getByText('No tasks left. Add one above.')).toBeTruthy();
   });
 
   it('renders TodoList with header summary when ready with tasks', async () => {
