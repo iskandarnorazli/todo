@@ -1,7 +1,11 @@
 # Requirements
 
 The assessment brief, restated as numbered requirements so that issues, tests and the README
-can cite them. The owner holds the original PDF. Only the owner changes this file. Each row
+can cite them. The owner holds the original PDF; this file was checked against it clause by
+clause on 2026-11-17, and every clause of the brief is a row here. The brief's objective: a
+simple to-do app with a clean mobile interface that shows mobile fundamentals and API
+integration. The brief puts the effort at 4 to 6 hours: keep the app that small, and spend
+care on the graded points below rather than on extra features. Only the owner changes this file. Each row
 names the issue that delivers it and the test that proves it; `(todo)` means not yet filed or
 not yet written.
 
@@ -28,6 +32,7 @@ not yet written.
 |---|---|---|
 | T13 | React Native with Expo, functional components and hooks; JavaScript or TypeScript | D1 |
 | T14 | `fetch` or Axios; the JSONPlaceholder API; no backend, no authentication | D1, `docs/API.md` |
+| T14a | API writes are simulated and do not persist: toggles and deletes are local, and fetching again may restore the original data (the brief says so; it is not a bug) | D5, `docs/API.md` |
 
 ## Deliverables
 
