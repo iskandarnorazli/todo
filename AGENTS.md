@@ -72,7 +72,7 @@ before/after images on the PR; the PR body adds phone screenshots from Expo Go; 
 2. Read the Goal, the Gate and the Stop list. Write the tests first and show them failing.
 3. Commit as `Iskandar Norazli <111472977+iskandarnorazli@users.noreply.github.com>`, with no AI or Co-Authored-By lines. The message states the tests added, the commands run with their results, and the negative control: the fix turned off, the new test failing.
 4. Push the branch and open a **draft** PR. Never push `main`, never force-push, never merge.
-5. Comment on the issue: each gate line, its command and its result. Remove `wip:`, add `needs-review`. Never close an issue; the owner or a reviewer who did not build it does.
+5. Comment on the issue only after both CI jobs have finished. Write the comment to a file and post it with `gh issue comment <n> --body-file <file>`: PowerShell turns backticks in `--body` into escape characters (the 2026-11-17 audit found every gate comment garbled). Each gate line names its command and its result; each CI line names the run URL and its conclusion. "Running" or "triggered" is not evidence. Remove `wip:`, add `needs-review`. Never close an issue; the owner or a reviewer who did not build it does.
 6. Stop and leave a comment when the work needs a file the issue does not list, a design decision, or a change to an existing test's expectation (the `changing-behaviour` skill says which changes those are).
 
 ## Gate commands
