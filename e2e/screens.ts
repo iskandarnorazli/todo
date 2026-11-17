@@ -81,5 +81,15 @@ export const SCREENS: ScreenState[] = [
       await page.getByText("Couldn't add the task.").first().waitFor();
     },
   },
-  { id: 'S1.reloadConfirm', status: 'planned' },
+  {
+    id: 'S1.reloadConfirm',
+    status: 'built',
+    open: async (page) => {
+      await stubApi(page);
+      await page.goto('/');
+      await page.getByText('Buy groceries').first().waitFor();
+      await page.getByRole('button', { name: 'Reload' }).click();
+      await page.getByText('Reload from server?').waitFor();
+    },
+  },
 ];

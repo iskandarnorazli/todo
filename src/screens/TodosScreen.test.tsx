@@ -81,4 +81,46 @@ describe('TodosScreen (D2, D17)', () => {
     expect(screen.getByText('Buy groceries')).toBeTruthy();
     expect(screen.getByText('Call bank')).toBeTruthy();
   });
+
+  it('Reload then Cancel leaves reload uncalled', async () => {
+    const reload = jest.fn();
+    mockUseTodos.mockReturnValue(
+      makeHookResult({
+        state: {
+          kind: 'ready',
+          tasks: [{ localId: 'server-1', serverId: 1, title: 'Buy groceries', completed: false }],
+          add: { kind: 'idle' },
+          nextLocalId: 1,
+        },
+        reload,
+      }),
+    );
+
+    await render(<TodosScreen />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Reload' }));
+    expect(screen.getByText('Reload from server?')).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Cancel' }));
+    expect(reload).not.toHaveBeenCalled();
+  });
+
+  it('Reload then Confirm calls reload once', async () => {
+    const reload = jest.fn();
+    mockUseTodos.mockReturnValue(
+      makeHookResult({
+        state: {
+          kind: 'ready',
+          tasks: [{ localId: 'server-1', serverId: 1, title: 'Buy groceries', completed: false }],
+          add: { kind: 'idle' },
+          nextLocalId: 1,
+        },
+        reload,
+      }),
+    );
+
+    await render(<TodosScreen />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Reload' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Confirm reload' }));
+    expect(reload).toHaveBeenCalledTimes(1);
+  });
 });
