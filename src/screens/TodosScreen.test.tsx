@@ -61,8 +61,8 @@ describe('TodosScreen (D2, D17)', () => {
     );
 
     await render(<TodosScreen />);
-    expect(screen.getByText('0 / 0 completed')).toBeTruthy();
-    expect(screen.getByText('No tasks yet.')).toBeTruthy();
+    expect(screen.queryByText('0 / 0 completed')).toBeNull();
+    expect(screen.getByText('No tasks left. Add one above.')).toBeTruthy();
   });
 
   it('renders TodoList with header summary when ready with tasks', async () => {
@@ -80,5 +80,47 @@ describe('TodosScreen (D2, D17)', () => {
     expect(screen.getByText('1 / 2 completed')).toBeTruthy();
     expect(screen.getByText('Buy groceries')).toBeTruthy();
     expect(screen.getByText('Call bank')).toBeTruthy();
+  });
+
+  it('Reload then Cancel leaves reload uncalled', async () => {
+    const reload = jest.fn();
+    mockUseTodos.mockReturnValue(
+      makeHookResult({
+        state: {
+          kind: 'ready',
+          tasks: [{ localId: 'server-1', serverId: 1, title: 'Buy groceries', completed: false }],
+          add: { kind: 'idle' },
+          nextLocalId: 1,
+        },
+        reload,
+      }),
+    );
+
+    await render(<TodosScreen />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Reload' }));
+    expect(screen.getByText('Reload from server?')).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Cancel' }));
+    expect(reload).not.toHaveBeenCalled();
+  });
+
+  it('Reload then Confirm calls reload once', async () => {
+    const reload = jest.fn();
+    mockUseTodos.mockReturnValue(
+      makeHookResult({
+        state: {
+          kind: 'ready',
+          tasks: [{ localId: 'server-1', serverId: 1, title: 'Buy groceries', completed: false }],
+          add: { kind: 'idle' },
+          nextLocalId: 1,
+        },
+        reload,
+      }),
+    );
+
+    await render(<TodosScreen />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Reload' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Confirm reload' }));
+    expect(reload).toHaveBeenCalledTimes(1);
   });
 });
